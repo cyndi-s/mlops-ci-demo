@@ -4,7 +4,7 @@ name: mlops-ci
 on:
   push:
   workflow_dispatch:
-    
+
 defaults:
   run:
     shell: bash -l {0}
@@ -22,10 +22,9 @@ jobs:
         with:
           auto-activate-base: true
           miniforge-version: latest
-
-      - uses: actions/setup-python@v5
-        with:
-          python-version: '3.10'
+    
+      - name: Export CONDA for later steps
+        run: echo "CONDA=$CONDA" >> $GITHUB_ENV
 
       - name: Install MLflow
         shell: bash
@@ -36,6 +35,8 @@ jobs:
 
       - name: Train with MLflow (uses MLproject defaults)
         shell: bash
+        env:
+            MLFLOW_CONDA_HOME: ${{ env.CONDA }} 
         run: |
           set -euo pipefail
           mlflow run .
