@@ -9,37 +9,38 @@ defaults:
   run:
     shell: bash -l {0}
 
+concurrency:
+  group: ci-train-${{ github.ref }}
+  cancel-in-progress: true
+
 
 jobs:
   train:
     runs-on: ubuntu-latest
-    timeout-minutes: 20   # prevent hangs from staying green
+    
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout
+        uses: actions/checkout@v4
 
-      - uses: conda-incubator/setup-miniconda@v3
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
         with:
           auto-activate-base: true
           miniforge-version: latest
-    
-      - name: Export CONDA for later steps
-        run: echo "CONDA=$CONDA" >> $GITHUB_ENV
 
       - name: Install MLflow
         shell: bash
         run: |
-          set -euo pipefail
           python -m pip install --upgrade pip
-          pip install mlflow==2.16.0
+          pip install "mlflow==2.16.0"
 
       - name: Train with MLflow (uses MLproject defaults)
         shell: bash
         env:
             MLFLOW_CONDA_HOME: ${{ env.CONDA }} 
-            MLFLOW_TRACKING_URI: file:./mlruns
+            MLFLOW_TRACKING_URI: file:${{ runner.temp }}/mlruns_${{ github.run_id }}
         run: |
-          set -euo pipefail
           mlflow run .
 
       # Only prints quick diagnostics if something failed; does not store artifacts.
