@@ -38,14 +38,29 @@ def main():
 
     try:
         import mlflow
+        import mlflow.sklearn
+
         mlflow.set_experiment("mlops-ci-demo")
-        with mlflow.start_run(nested=True):
-            mlflow.log_param("rows",len(df))
-            mlflow.log_metric("accuracy",float(acc))
-            mlflow.log_metric("precision",float(prec))
-            mlflow.log_metric("recall",float(rec))
-            mlflow.log_artifact(a.data)
-            if os.path.exists(a.out): mlflow.log_artifact(a.out)
+        mlflow.sklearn.autolog(log_models=True)
+
+        # train inside autolog context
+        m = LogisticRegression(solver="liblinear", random_state=a.random_state)
+        m.fit(Xtr, ytr)
+
+        yp = m.predict(Xte)
+        acc = accuracy_score(yte, yp)
+        prec = precision_score(yte, yp)
+        rec = recall_score(yte, yp)
+
+        joblib.dump(m, a.out)
+
+        print(f"rows={len(df)}")
+        print(f"test_size={a.test_size}")
+        print(f"accuracy={acc:.6f}")
+        print(f"precision={prec:.6f}")
+        print(f"recall={rec:.6f}")
+        print(f"model_path={os.path.abspath(a.out)}")
+
     except Exception as e:
         print(f"mlflow_logging_skipped={e.__class__.__name__}")
 
