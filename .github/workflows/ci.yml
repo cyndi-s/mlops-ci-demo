@@ -42,9 +42,11 @@ jobs:
         shell: bash
         env:
             MLFLOW_CONDA_HOME: ${{ env.CONDA }} 
-            MLFLOW_TRACKING_URI: file:${{ runner.temp }}/mlruns_${{ github.run_id }}
+            MLFLOW_TRACKING_URI: https://dagshub.com/cyndi-s/mlops-ci-demo.mlflow
+            MLFLOW_TRACKING_USERNAME: ${{ secrets.DAGSHUB_USER }}
+            MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
         run: |
-          mlflow run . --env-manager=local
+          mlflow run . 
 
       # Only prints quick diagnostics if something failed
       - name: Debug on failure
