@@ -1,0 +1,49 @@
+{
+    "name": "mlops-ci-demo",
+    "path": "../mlops-ci-demo",
+    "python_version": "3.13.5",
+    "requirements": {
+        "py_reqs": "../mlops-ci-demo/requirements.txt",
+        "soft_reqs": null,
+        "hard_reqs": null
+    },
+    "workflow": [
+        {
+            "cmd": "python ../mlops-ci-demo/src/train.py",
+            "main": "../mlops-ci-demo/src/train.py",
+            "steps": [
+                "train"
+            ],
+            "args_lib": "argparse",
+            "description": null,
+            "args": [
+                {
+                    "option_strings": [
+                        "--data"
+                    ],
+                    "input": true,
+                    "destination": "data",
+                    "default": "data/data.csv",
+                    "type": "str",
+                    "required": false,
+                    "choices": null,
+                    "help": null
+                },
+                {
+                    "option_strings": [
+                        "--out"
+                    ],
+                    "input": true,
+                    "destination": "out",
+                    "default": "model.pkl",
+                    "type": "str",
+                    "required": false,
+                    "choices": null,
+                    "help": null
+                }
+            ],
+            "ins": [],
+            "outs": []
+        }
+    ]
+}

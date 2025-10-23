@@ -1,0 +1,10 @@
+artifact_location: file:///Users/Shared/github-workspace/yorku-ease/mlops-ci-demo/mlruns/0/models/m-7e9238afde0741b19a1fd742b242f505/artifacts
+creation_timestamp: 1761240684484
+experiment_id: '0'
+last_updated_timestamp: 1761240688135
+model_id: m-7e9238afde0741b19a1fd742b242f505
+model_type: null
+name: model
+source_run_id: 7d909e26503a43f590ea32cf998b94d4
+status: 2
+status_message: null

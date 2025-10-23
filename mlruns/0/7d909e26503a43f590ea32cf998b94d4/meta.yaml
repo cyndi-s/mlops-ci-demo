@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/Shared/github-workspace/yorku-ease/mlops-ci-demo/mlruns/0/7d909e26503a43f590ea32cf998b94d4/artifacts
+end_time: 1761240689666
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: 7d909e26503a43f590ea32cf998b94d4
+run_name: nebulous-dove-302
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761240678775
+status: 3
+tags: []
+user_id: yuxinsu

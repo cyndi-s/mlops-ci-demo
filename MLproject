@@ -1,0 +1,12 @@
+name: mlops-ci-demo
+conda_env: conda_mlops-ci-demo.yaml
+entry_points:
+  main:
+    parameters:
+      data:
+        type: str
+        default: data/data.csv
+      out:
+        type: str
+        default: model.pkl
+    command: python ../mlops-ci-demo/src/train.py --data {data} --out {out}

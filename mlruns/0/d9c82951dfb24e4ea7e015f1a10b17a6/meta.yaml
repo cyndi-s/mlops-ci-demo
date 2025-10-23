@@ -1,0 +1,14 @@
+artifact_uri: file:///Users/Shared/github-workspace/yorku-ease/mlops-ci-demo/mlruns/0/d9c82951dfb24e4ea7e015f1a10b17a6/artifacts
+end_time: 1761240689150
+entry_point_name: ''
+experiment_id: '0'
+lifecycle_stage: active
+run_id: d9c82951dfb24e4ea7e015f1a10b17a6
+run_name: painted-penguin-988
+source_name: ''
+source_type: 4
+source_version: ''
+start_time: 1761240689139
+status: 3
+tags: []
+user_id: yuxinsu

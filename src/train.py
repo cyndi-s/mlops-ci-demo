@@ -1,19 +1,24 @@
-import argparse, pandas as pd, numpy as np, matplotlib
-matplotlib.use("Agg")  # headless backend for CI/CD
+import argparse, pandas as pd, matplotlib
+matplotlib.use("Agg")  
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
 import mlflow
+import mlflow.sklearn
 
 
+
+mlflow.sklearn.autolog()
 
 p=argparse.ArgumentParser(); 
-p.add_argument("--data",default="data.csv")
+p.add_argument("--data",default="data/data.csv")
 p.add_argument("--out",default="model.pkl")
 a=p.parse_args()
 
 df=pd.read_csv(a.data)
 X=df[['x']].values
 y=df['y'].values
+
+
 m=LinearRegression().fit(X,y)
 print("coef:",m.coef_[0],"intercept:",m.intercept_)
 
