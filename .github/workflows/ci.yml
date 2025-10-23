@@ -35,6 +35,9 @@ jobs:
           python -m pip install --upgrade pip
           pip install "mlflow==2.16.0"
 
+      - name: Install training deps
+        run: pip install -r requirements.txt
+
       - name: Train with MLflow (uses MLproject defaults)
         shell: bash
         env:
@@ -43,7 +46,7 @@ jobs:
         run: |
           mlflow run . --env-manager=local
 
-      # Only prints quick diagnostics if something failed; does not store artifacts.
+      # Only prints quick diagnostics if something failed
       - name: Debug on failure
         if: failure()
         shell: bash
