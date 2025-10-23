@@ -41,7 +41,7 @@ jobs:
             MLFLOW_CONDA_HOME: ${{ env.CONDA }} 
             MLFLOW_TRACKING_URI: file:${{ runner.temp }}/mlruns_${{ github.run_id }}
         run: |
-          mlflow run .
+          mlflow run . --env-manager=local
 
       # Only prints quick diagnostics if something failed; does not store artifacts.
       - name: Debug on failure
