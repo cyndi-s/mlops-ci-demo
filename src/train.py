@@ -2,10 +2,12 @@ import argparse, pandas as pd, matplotlib
 matplotlib.use("Agg")  
 import matplotlib.pyplot as plt
 from sklearn.linear_model import LinearRegression
-import mlflow
+import mlflow, os
 import mlflow.sklearn
 
 
+if not os.getenv("MLFLOW_TRACKING_URI"):
+    mlflow.set_tracking_uri("file:./mlruns")
 
 mlflow.sklearn.autolog()
 

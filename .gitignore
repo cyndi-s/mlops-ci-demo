@@ -2,7 +2,7 @@
 __pycache__/
 *.pyc
 .DS_Store
-mlruns/          # local MLflow artifacts
+mlruns/         
 .ipynb_checkpoints/
 *.log
 outputs/
