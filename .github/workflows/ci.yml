@@ -1,0 +1,46 @@
+# .github/workflows/ci.yml
+name: mlops-ci
+
+on:
+  push:
+  workflow_dispatch:
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20   # prevent hangs from staying green
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-activate-base: true
+          miniforge-version: latest
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install MLflow
+        shell: bash
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install mlflow==2.16.0
+
+      - name: Train with MLflow (uses MLproject defaults)
+        shell: bash
+        run: |
+          set -euo pipefail
+          mlflow run .
+
+      # Only prints quick diagnostics if something failed; does not store artifacts.
+      - name: Debug on failure
+        if: failure()
+        shell: bash
+        run: |
+          echo "==== DEBUG: repo tree ===="
+          ls -R
+          echo "==== DEBUG: recent error traces ===="
+          grep -Rin "Traceback\|Error\|Exception" || true
