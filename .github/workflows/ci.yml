@@ -57,10 +57,3 @@ jobs:
           ls -R
           echo "==== DEBUG: recent error traces ===="
           grep -Rin "Traceback\|Error\|Exception" || true
-
-
-      - name: Add DagsHub link
-        if: ${{ always() }}
-        run: |
-            echo "### DagsHub MLflow" >> $GITHUB_STEP_SUMMARY
-            echo "- Experiments: https://dagshub.com/cyndi-s/mlops-ci-demo.mlflow/#/experiments/0" >> $GITHUB_STEP_SUMMARY
