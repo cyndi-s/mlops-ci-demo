@@ -46,7 +46,7 @@ jobs:
           MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
           MLFLOW_EXPERIMENT_NAME: Default
         run: |
-          mlflow run . -e main
+          mlflow run . -e main --env-manager=local
 
       - name: Mark trained
         run: echo "TRAINED_THIS_RUN=true" >> $GITHUB_ENV
