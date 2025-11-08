@@ -1,0 +1,89 @@
+name: mlops-plugin
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: mlops-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  mlops:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout target repo (mlops-ci-demo)
+        uses: actions/checkout@v4
+
+      # Apply the plugin: pull it into a folder and call its scripts
+      - name: Pull mlops-plugin
+        uses: actions/checkout@v4
+        with:
+          repository: cyndi-s/mlops-plugin
+          ref: main
+          path: .github/mlops-plugin
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install mlflow scikit-learn matplotlib
+
+      # ===== Train your demo (MLproject entry point) =====
+      - name: Train (MLproject: train_sklearn)
+        env:
+          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+          MLFLOW_EXPERIMENT_NAME: Default
+        run: |
+          mlflow run . -e train_sklearn -P max_iter=200
+
+      - name: Mark trained
+        run: echo "TRAINED_THIS_RUN=true" >> $GITHUB_ENV
+
+      # ===== Plugin scripts =====
+      - name: Detect cause (Data/Script/Both)
+        shell: bash
+        run: bash .github/mlops-plugin/github/scripts/detect_cause_mlops.sh
+
+      - name: Render val_accuracy.svg
+        env:
+          LOCAL_TZ: America/Toronto
+        run: python .github/mlops-plugin/github/scripts/render_val_accuracy_svg.py
+
+      - name: Extract MLflow info
+        id: ml
+        env:
+          TRAINED_THIS_RUN: ${{ env.TRAINED_THIS_RUN }}
+        run: python .github/mlops-plugin/github/scripts/extract_mlflow.py
+
+      - name: Append commitHistory.csv
+        env:
+          TRAINED: ${{ env.TRAINED_THIS_RUN }}
+          accuracy: ${{ steps.ml.outputs.accuracy }}
+          loss: ${{ steps.ml.outputs.loss }}
+          val_accuracy: ${{ steps.ml.outputs.val_accuracy }}
+          val_loss: ${{ steps.ml.outputs.val_loss }}
+          training_duration: ${{ steps.ml.outputs.training_duration }}
+          model_version: ${{ steps.ml.outputs.model_version }}
+        run: python .github/mlops-plugin/github/scripts/append_commitHistory.py
+
+      - name: Upload chart artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: val_accuracy
+          path: val_accuracy.svg
+
+      - name: Generate Summary
+        env:
+          LOCAL_TZ: America/Toronto
+          TRAINED_THIS_RUN: ${{ env.TRAINED_THIS_RUN }}
+        run: python .github/mlops-plugin/github/scripts/generate_summary_md.py
