@@ -55,6 +55,7 @@ jobs:
       - name: Detect cause (Data/Script/Both)
         working-directory: mlops-plugin/.github/scripts
         run: |
+            ls -la
             chmod +x detect_cause_mlops.sh
             bash ./detect_cause_mlops.sh
 
