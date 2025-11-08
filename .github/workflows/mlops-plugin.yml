@@ -39,13 +39,13 @@ jobs:
           pip install mlflow scikit-learn matplotlib
 
       # ===== Train your demo (MLproject entry point) =====
-      - name: "Train (MLproject: train_sklearn)"
+      - name: "Train (MLproject: main)"
         env:
           MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
-          MLFLOW_TRACKING_PASSWORD: ${{ secrets.MLFLOW_TRACKING_PASSWORD }}
+          MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
           MLFLOW_EXPERIMENT_NAME: Default
         run: |
-          mlflow run . -e train_sklearn -P max_iter=200
+          mlflow run . -e main
 
       - name: Mark trained
         run: echo "TRAINED_THIS_RUN=true" >> $GITHUB_ENV
