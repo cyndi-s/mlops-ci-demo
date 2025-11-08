@@ -41,7 +41,8 @@ jobs:
       # ===== Train your demo (MLproject entry point) =====
       - name: "Train (MLproject: main)"
         env:
-          MLFLOW_TRACKING_URI: ${{ secrets.MLFLOW_TRACKING_URI }}
+          MLFLOW_TRACKING_URI: "https://dagshub.com/cyndi-s/mlops-ci-demo.mlflow"
+          MLFLOW_TRACKING_USERNAME: ${{ secrets.DAGSHUB_USER }}
           MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
           MLFLOW_EXPERIMENT_NAME: Default
         run: |
