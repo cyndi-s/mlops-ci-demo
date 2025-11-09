@@ -53,7 +53,7 @@ jobs:
 
       # ===== Plugin scripts =====
       - name: Detect cause (Data/Script/Both)
-        working-directory: mlops-plugin/.github/scripts
+        working-directory: .github/mlops-plugin/.github/scripts
         run: |
             ls -la
             chmod +x detect_cause_mlops.sh
@@ -62,13 +62,13 @@ jobs:
       - name: Render val_accuracy.svg
         env:
           LOCAL_TZ: America/Toronto
-        run: python mlops-plugin/.github/scripts/render_val_accuracy_svg.py
+        run: python .github/mlops-plugin/.github/scripts/render_val_accuracy_svg.py
 
       - name: Extract MLflow info
         id: ml
         env:
           TRAINED_THIS_RUN: ${{ env.TRAINED_THIS_RUN }}
-        run: python mlops-plugin/.github/scripts/extract_mlflow.py
+        run: python .github/mlops-plugin/.github/scripts/extract_mlflow.py
 
       - name: Append commitHistory.csv
         env:
@@ -79,7 +79,7 @@ jobs:
           val_loss: ${{ steps.ml.outputs.val_loss }}
           training_duration: ${{ steps.ml.outputs.training_duration }}
           model_version: ${{ steps.ml.outputs.model_version }}
-        run: python mlops-plugin/.github/scripts/append_commitHistory.py
+        run: python .github/mlops-plugin/.github/scripts/append_commitHistory.py
 
       - name: Upload chart artifact
         uses: actions/upload-artifact@v4
@@ -91,4 +91,4 @@ jobs:
         env:
           LOCAL_TZ: America/Toronto
           TRAINED_THIS_RUN: ${{ env.TRAINED_THIS_RUN }}
-        run: python mlops-plugin/.github/scripts/generate_summary_md.py
+        run: python .github/mlops-plugin/.github/scripts/generate_summary_md.py
