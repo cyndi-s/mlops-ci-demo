@@ -13,6 +13,15 @@ jobs:
       # 1) Checkout your mlops-demo repo
       - name: Checkout repo
         uses: actions/checkout@v4
+      
+         # 2) Checkout private mlops-plugin repo into a subfolder
+      - name: Checkout mlops-plugin (private action)
+        uses: actions/checkout@v4
+        with:
+          repository: cyndi-s/mlops-plugin       # <--- your plugin repo
+          ref: main                              # or a tag/sha if you prefer
+          token: ${{ secrets.MLOPS_PLUGIN_TOKEN }} # PAT with repo read access
+          path: .github/mlops-plugin   
 
       # 2) Set up Python (needed for mlflow + your code)
       - name: Set up Python
@@ -29,7 +38,7 @@ jobs:
 
       # 4) Run the mlops-plugin (external action repo)
       - name: Run mlops-plugin
-        uses: cyndi-s/mlops-plugin@main   # <-- change owner/name if needed
+        uses: ./.github/mlops-plugin/action   
         with:
           # remote MLflow on DagsHub
           mlflow_tracking_uri: ${{ secrets.MLFLOW_TRACKING_URI }}
