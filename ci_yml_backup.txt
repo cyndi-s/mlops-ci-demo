@@ -1,0 +1,59 @@
+# .github/workflows/ci.yml
+name: mlops-ci
+
+on:
+  push:
+  workflow_dispatch:
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+concurrency:
+  group: ci-train-${{ github.ref }}
+  cancel-in-progress: true
+
+
+jobs:
+  train:
+    runs-on: ubuntu-latest
+    
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Miniconda
+        uses: conda-incubator/setup-miniconda@v3
+        with:
+          auto-activate-base: true
+          miniforge-version: latest
+
+      - name: Install MLflow
+        shell: bash
+        run: |
+          python -m pip install --upgrade pip
+          pip install "mlflow==2.16.0"
+
+      - name: Install training deps
+        run: pip install -r requirements.txt
+
+      - name: Train with MLflow (uses MLproject defaults)
+        shell: bash
+        env:
+            MLFLOW_CONDA_HOME: ${{ env.CONDA }} 
+            MLFLOW_TRACKING_URI: https://dagshub.com/cyndi-s/mlops-ci-demo.mlflow
+            MLFLOW_TRACKING_USERNAME: ${{ secrets.DAGSHUB_USER }}
+            MLFLOW_TRACKING_PASSWORD: ${{ secrets.DAGSHUB_TOKEN }}
+        run: |
+          mlflow run . 
+
+      # Only prints quick diagnostics if something failed
+      - name: Debug on failure
+        if: failure()
+        shell: bash
+        run: |
+          echo "==== DEBUG: repo tree ===="
+          ls -R
+          echo "==== DEBUG: recent error traces ===="
+          grep -Rin "Traceback\|Error\|Exception" || true
