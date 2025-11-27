@@ -48,11 +48,7 @@ jobs:
           # training behavior
           train: "true"              # let plugin call `mlflow run .`
           install_mlflow: "true"     # plugin will pip install mlflow
-
           # Gist integration (optional – leave empty for now, plugin will skip)
-          gist_id: ""
-          gist_token: ""
-          gist_filename: "commitHistory.csv"                # plugin will pip install mlflow
-
-
-# testing testing
+          gist_id:     ${{ secrets.GIST_ID }}      # or vars.GIST_ID if you stored it as a variable
+          gist_token:  ${{ secrets.GIST_TOKEN }}
+          gist_filename: "commitHistory.csv"
